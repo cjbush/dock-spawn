@@ -1874,9 +1874,9 @@ DockManager.prototype.floatDialog = function(container, x, y)
     //check the dialog do not already exist
     this.context.model.dialogs.forEach(function(dialog) {
         if (container == dialog.panel) {
-            dialog.show(x, y);
+            dialog.show();
+            dialog.setPosition(x, y);
             retdiag = dialog;
-
         }
     });
     if (retdiag)
