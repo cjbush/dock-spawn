@@ -45,7 +45,7 @@ TabPage.prototype.onSelected = function()
     if (this.container instanceof PanelContainer)
     {
         var panel = this.container;
-		if(panel.onClickHandler !== 'undefined') {
+		if(typeof panel.onClickHandler !== 'undefined' && panel.onClickHandler !== null) {
 			panel.onClickHandler();
 		}
 		
