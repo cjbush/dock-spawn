@@ -18,6 +18,8 @@ function PanelContainer(elementContent, dockManager, title)
     this.minimumAllowedChildNodes = 0;
     this._floatingDialog = undefined;
     this.isDialog = false;
+	this.canSelect = true;
+	this.onClickHandler = null;
     this._canUndock = dockManager._undockEnabled;
     this.eventListeners = [];
     this._initialize();
@@ -35,6 +37,11 @@ PanelContainer.prototype.canUndock = function(state){
     });
 
 };
+
+PanelContainer.prototype.setOnClickHandler = function(canSelect, handler){
+	this.canSelect = canSelect;
+	this.onClickHandler = handler;
+}
 
 PanelContainer.prototype.addListener = function(listener){
     this.eventListeners.push(listener);

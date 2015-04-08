@@ -103,20 +103,20 @@ module.exports={
   "bugs": {
     "url": "https://github.com/englercj/dock-spawn/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "browserify": "^6.0.3",
     "gulp": "^3.8.8",
     "gulp-jshint": "^1.8.5",
-    "gulp-util": "^3.0.1",
-    "jshint-summary": "^0.4.0",
-    "vinyl-source-stream": "^1.0.0",
-    "watchify": "^2.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-sourcemaps": "^1.3.0",
     "gulp-uglify": "^1.1.0",
-    "vinyl-buffer": "^1.0.0"
+    "gulp-util": "^3.0.1",
+    "gulp-webserver": "^0.9.0",
+    "jshint-summary": "^0.4.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.0.0"
   }
 }
 
@@ -330,6 +330,8 @@ function PanelContainer(elementContent, dockManager, title)
     this.minimumAllowedChildNodes = 0;
     this._floatingDialog = undefined;
     this.isDialog = false;
+	this.canSelect = true;
+	this.onClickHandler = null;
     this._canUndock = dockManager._undockEnabled;
     this.eventListeners = [];
     this._initialize();
@@ -347,6 +349,11 @@ PanelContainer.prototype.canUndock = function(state){
     });
 
 };
+
+PanelContainer.prototype.setOnClickHandler = function(canSelect, handler){
+	this.canSelect = canSelect;
+	this.onClickHandler = handler;
+}
 
 PanelContainer.prototype.addListener = function(listener){
     this.eventListeners.push(listener);
@@ -3624,13 +3631,20 @@ TabPage.prototype.destroy = function()
 
 TabPage.prototype.onSelected = function()
 {
-    this.host.onTabPageSelected(this);
     if (this.container instanceof PanelContainer)
     {
         var panel = this.container;
-        panel.dockManager.notifyOnTabChange(this);
+		if(panel.onClickHandler !== 'undefined') {
+			panel.onClickHandler();
+		}
+		
+		if(!panel.canSelect) {
+			return;
+		} else {
+			this.host.onTabPageSelected(this);
+			panel.dockManager.notifyOnTabChange(this);
+		}
     }
-
 };
 
 TabPage.prototype.setSelected = function(flag)

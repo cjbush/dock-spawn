@@ -42,13 +42,20 @@ TabPage.prototype.destroy = function()
 
 TabPage.prototype.onSelected = function()
 {
-    this.host.onTabPageSelected(this);
     if (this.container instanceof PanelContainer)
     {
         var panel = this.container;
-        panel.dockManager.notifyOnTabChange(this);
+		if(panel.onClickHandler !== 'undefined') {
+			panel.onClickHandler();
+		}
+		
+		if(!panel.canSelect) {
+			return;
+		} else {
+			this.host.onTabPageSelected(this);
+			panel.dockManager.notifyOnTabChange(this);
+		}
     }
-
 };
 
 TabPage.prototype.setSelected = function(flag)
